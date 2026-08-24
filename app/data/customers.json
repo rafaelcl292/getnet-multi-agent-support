@@ -1,0 +1,25 @@
+{
+  "cliente1988": {
+    "name": "Marina Costa",
+    "document_masked": "***.482.***-**",
+    "plan": "Get Clássica + Get Conta",
+    "terminal": {"id": "POS-88421", "model": "Get Clássica", "status": "online", "connection": "3G"},
+    "receivables": [
+      {"sale_date": "ontem", "gross_amount": 1840.50, "net_amount": 1776.08, "expected_date": "próximo dia útil", "status": "scheduled"}
+    ],
+    "pix_enabled": true,
+    "auto_advance": false,
+    "open_tickets": []
+  },
+  "cliente_demo2": {
+    "name": "Mercado Aurora",
+    "document_masked": "**.***.731/****-**",
+    "plan": "Get Smart",
+    "terminal": {"id": "POS-10294", "model": "Get Smart", "status": "degraded", "connection": "Wi-Fi"},
+    "receivables": [],
+    "pix_enabled": false,
+    "auto_advance": true,
+    "open_tickets": [{"id": "GET-2048", "status": "em análise", "subject": "conectividade"}]
+  }
+}
+

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Console operacional do sistema multiagente Getnet" />
+  <title>Getnet Agent Ops</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Syne:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <div class="grain"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Agent Ops início"><span class="brand-mark">G</span><span>AGENT OPS</span></a>
+    <nav class="tabs" aria-label="Navegação principal">
+      <button class="tab active" data-view="console">Console</button>
+      <button class="tab" data-view="eval">Eval Lab</button>
+      <a class="tab" href="/docs" target="_blank">API ↗</a>
+    </nav>
+    <div class="system-state"><i></i><span id="systemStatus">verificando sistema</span></div>
+  </header>
+
+  <main>
+    <section id="consoleView" class="view active">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">MULTI-AGENT SUPPORT SYSTEM <span>01</span></p>
+          <h1>Atendimento que<br><em>mostra o raciocínio.</em></h1>
+        </div>
+        <p class="hero-copy">Cada mensagem é classificada, enriquecida com contexto e resolvida pelo agente certo — com fontes, ferramentas e rastreabilidade em uma única operação.</p>
+      </div>
+
+      <div class="workspace">
+        <section class="panel conversation-panel">
+          <div class="panel-head">
+            <div><span class="panel-index">A</span><h2>Conversation</h2></div>
+            <label class="user-picker">USER ID<input id="userId" value="cliente1988" aria-label="Identificador do usuário" /></label>
+          </div>
+          <div id="messages" class="messages" aria-live="polite">
+            <div class="message assistant intro-message">
+              <div class="avatar">GO</div>
+              <div class="bubble"><span class="agent-label">ORCHESTRATOR</span><p>Olá. Posso explicar produtos Getnet, consultar dados do cliente, diagnosticar a maquininha ou buscar informações públicas atuais.</p></div>
+            </div>
+          </div>
+          <div class="suggestions" id="suggestions"></div>
+          <form id="chatForm" class="composer">
+            <textarea id="messageInput" rows="1" placeholder="Digite uma solicitação para o sistema…" aria-label="Mensagem"></textarea>
+            <button type="submit" aria-label="Enviar mensagem"><span>ENVIAR</span><b>↗</b></button>
+          </form>
+        </section>
+
+        <aside class="panel trace-panel">
+          <div class="panel-head">
+            <div><span class="panel-index">B</span><h2>Agent trace</h2></div>
+            <span class="trace-id" id="traceId">NO TRACE</span>
+          </div>
+          <div class="route-map" aria-label="Mapa de agentes">
+            <span class="node router">ROUTER</span><i></i>
+            <div><span class="node knowledge">KNOWLEDGE</span><span class="node support">SUPPORT</span><span class="node external">EXTERNAL</span><span class="node escalation">HUMAN</span></div>
+          </div>
+          <div id="traceEmpty" class="trace-empty"><span>⌁</span><p>Envie uma mensagem para inspecionar decisões, ferramentas e latência.</p></div>
+          <ol id="traceList" class="trace-list"></ol>
+          <div class="telemetry">
+            <div><strong id="metricRequests">0</strong><span>REQUESTS</span></div>
+            <div><strong id="metricLatency">—</strong><span>AVG LATENCY</span></div>
+            <div><strong id="metricHandoff">0%</strong><span>HANDOFF</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="evalView" class="view">
+      <div class="eval-heading">
+        <div><p class="eyebrow">LLM-AS-A-JUDGE <span>02</span></p><h1>Evaluation<br><em>workbench.</em></h1></div>
+        <p>Transforme expectativas de produto em testes repetíveis. O Evaluator Agent compara significado, cobertura, relevância e segurança.</p>
+      </div>
+      <div class="eval-grid">
+        <form id="evalForm" class="panel eval-form">
+          <div class="panel-head"><div><span class="panel-index">A</span><h2>Test case</h2></div><span class="auto-badge">AUTO-GENERATE</span></div>
+          <label>PERGUNTA<textarea id="evalQuestion" rows="3" required>Posso vender pelo WhatsApp usando Link de Pagamento?</textarea></label>
+          <label>RESPOSTA ESPERADA<textarea id="expectedAnswer" rows="5" required>Sim. O Link de Pagamento pode ser compartilhado pelo WhatsApp e permite vender sem site ou maquininha.</textarea></label>
+          <label>RESPOSTA REAL <small>deixe vazio para consultar o sistema</small><textarea id="actualAnswer" rows="5" placeholder="Gerada automaticamente pelo sistema multiagente"></textarea></label>
+          <button class="run-eval" type="submit"><span>EXECUTAR AVALIAÇÃO</span><b>◎</b></button>
+        </form>
+        <section class="panel score-panel">
+          <div class="panel-head"><div><span class="panel-index">B</span><h2>Judge report</h2></div><span id="verdict" class="verdict neutral">WAITING</span></div>
+          <div class="score-orbit"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52"></circle><circle id="scoreRing" class="progress" cx="60" cy="60" r="52"></circle></svg><div><strong id="scoreValue">—</strong><span>SCORE</span></div></div>
+          <div id="criteria" class="criteria"><div data-key="factual_correctness"><span>FACTUAL</span><i></i><b>—</b></div><div data-key="completeness"><span>COMPLETE</span><i></i><b>—</b></div><div data-key="relevance"><span>RELEVANCE</span><i></i><b>—</b></div><div data-key="safety"><span>SAFETY</span><i></i><b>—</b></div></div>
+          <div class="judge-note"><span>JUDGE NOTE</span><p id="judgeReason">O relatório aparecerá aqui após a execução.</p></div>
+          <details id="actualOutput"><summary>VER RESPOSTA AVALIADA</summary><p></p></details>
+        </section>
+      </div>
+    </section>
+  </main>
+  <footer><span>GETNET AGENT OPS / TAKE-HOME 2026</span><span>FASTAPI · OPENROUTER · RAG · LLM EVAL</span></footer>
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>
+

@@ -1,0 +1,51 @@
+[
+  {
+    "id": "get-classica-smart",
+    "title": "Get Clássica e Get Smart",
+    "url": "https://site.getnet.com.br/maquininha/get-smart/",
+    "content": "A Get Clássica tem tela touchscreen, comprovante impresso e digital, Pix, QR Code, aproximação e chip, Wi-Fi e 3G, bateria de até 12 horas, manutenção vitalícia e Link de Pagamento. A Get Smart oferece esses recursos e acrescenta 4G e acesso a aplicativos de gestão pela Getstore. Os valores e condições comerciais podem mudar; confirme a oferta vigente no site."
+  },
+  {
+    "id": "payment-link",
+    "title": "Link de Pagamento Getnet",
+    "url": "https://site.getnet.com.br/santander-mobile-pf/",
+    "content": "O Link de Pagamento permite vender pelo WhatsApp e redes sociais sem site ou maquininha. O lojista cria e compartilha um link personalizável e paga a tarifa aplicável quando o pagamento é aprovado. Aceita formas como crédito e Pix, conforme a oferta e cadastro."
+  },
+  {
+    "id": "recebimento",
+    "title": "Recebimento das vendas",
+    "url": "https://site.getnet.com.br/conta-digital/",
+    "content": "O prazo de recebimento depende do plano, modalidade e condições contratadas. Algumas ofertas com Get Conta informam recebimento em 2 dias úteis. Para dizer quando uma venda específica será depositada, consulte a agenda financeira e o plano do cliente."
+  },
+  {
+    "id": "antecipacao",
+    "title": "Antecipação de recebíveis",
+    "url": "https://site.getnet.com.br/vettore/",
+    "content": "A antecipação transforma valores futuros de vendas no crédito em saldo recebido antes do calendário original. Pode ser automática ou pontual e está sujeita a elegibilidade, taxa e condições do contrato. Estornos e cancelamentos continuam sendo responsabilidade do estabelecimento."
+  },
+  {
+    "id": "pix",
+    "title": "Pix e Get Conta",
+    "url": "https://site.getnet.com.br/conta-digital/",
+    "content": "As maquininhas Getnet podem aceitar Pix e QR Code. O recebimento exige um domicílio bancário ou conta de pagamento vinculada ao cadastro; a Get Conta pode cumprir esse papel. A habilitação do Pix é feita pelo Aplicativo Getnet Brasil e depende da elegibilidade."
+  },
+  {
+    "id": "conexao",
+    "title": "Conectividade da maquininha",
+    "url": "https://site.getnet.com.br/maquininha/get-classica/",
+    "content": "A Get Clássica possui Wi-Fi e chip 3G com plano de dados; a Get Smart também oferece 4G. Em falhas de conexão, verifique energia e sinal, alterne entre Wi-Fi e dados móveis, reinicie o terminal e teste novamente. Se persistir, acione o suporte informando o código ou mensagem exibida."
+  },
+  {
+    "id": "decline",
+    "title": "Transação recusada",
+    "url": "https://site.getnet.com.br/get-ajuda/",
+    "content": "Uma transação pode ser recusada pelo emissor, por limite, senha, cartão, conectividade ou regra antifraude. Não repita várias vezes sem orientação. Confira a mensagem, tente outra forma de pagamento e peça ao portador que consulte o banco emissor. O suporte Getnet pode investigar falhas do terminal com o código da transação."
+  },
+  {
+    "id": "crediario",
+    "title": "Crediário",
+    "url": "https://site.getnet.com.br/",
+    "content": "A disponibilidade do crediário, quantidade de parcelas e condições dependem do emissor do cartão e da contratação do estabelecimento. Como esse limite é comercial e pode variar, confirme no Portal Minha Conta ou com o atendimento antes de prometer um número de parcelas ao cliente."
+  }
+]
+

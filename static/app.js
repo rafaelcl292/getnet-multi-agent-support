@@ -15,12 +15,107 @@ function escapeHtml(value) {
   return div.innerHTML;
 }
 
+function renderInlineMarkdown(value) {
+  let html = escapeHtml(value);
+  const code = [];
+  html = html.replace(/`([^`]+)`/g, (_, content) => {
+    code.push(`<code>${content}</code>`);
+    return `\u0000CODE${code.length - 1}\u0000`;
+  });
+  html = html
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1 ↗</a>')
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/__([^_]+)__/g, "<strong>$1</strong>")
+    .replace(/~~([^~]+)~~/g, "<del>$1</del>")
+    .replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>")
+    .replace(/(^|[^_])_([^_\n]+)_/g, "$1<em>$2</em>");
+  return html.replace(/\u0000CODE(\d+)\u0000/g, (_, index) => code[Number(index)]);
+}
+
+function renderMarkdown(value) {
+  const lines = value.replace(/\r\n?/g, "\n").split("\n");
+  const output = [];
+  let paragraph = [];
+  let listType = null;
+  let inCode = false;
+  let codeLanguage = "";
+  let codeLines = [];
+
+  const flushParagraph = () => {
+    if (!paragraph.length) return;
+    output.push(`<p>${paragraph.map(renderInlineMarkdown).join("<br>")}</p>`);
+    paragraph = [];
+  };
+  const closeList = () => {
+    if (!listType) return;
+    output.push(`</${listType}>`);
+    listType = null;
+  };
+  const openList = type => {
+    if (listType === type) return;
+    closeList();
+    output.push(`<${type}>`);
+    listType = type;
+  };
+
+  lines.forEach(line => {
+    const fence = line.match(/^```\s*([\w+-]*)\s*$/);
+    if (fence) {
+      flushParagraph(); closeList();
+      if (inCode) {
+        output.push(`<pre><code${codeLanguage ? ` data-language="${escapeHtml(codeLanguage)}"` : ""}>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
+        codeLines = []; codeLanguage = ""; inCode = false;
+      } else {
+        inCode = true; codeLanguage = fence[1] || "";
+      }
+      return;
+    }
+    if (inCode) { codeLines.push(line); return; }
+    if (!line.trim()) { flushParagraph(); closeList(); return; }
+
+    const heading = line.match(/^(#{1,4})\s+(.+)$/);
+    if (heading) {
+      flushParagraph(); closeList();
+      const level = heading[1].length;
+      output.push(`<h${level}>${renderInlineMarkdown(heading[2])}</h${level}>`);
+      return;
+    }
+    const unordered = line.match(/^\s*[-*+]\s+(.+)$/);
+    if (unordered) {
+      flushParagraph(); openList("ul");
+      output.push(`<li>${renderInlineMarkdown(unordered[1])}</li>`);
+      return;
+    }
+    const ordered = line.match(/^\s*\d+[.)]\s+(.+)$/);
+    if (ordered) {
+      flushParagraph(); openList("ol");
+      output.push(`<li>${renderInlineMarkdown(ordered[1])}</li>`);
+      return;
+    }
+    const quote = line.match(/^>\s?(.*)$/);
+    if (quote) {
+      flushParagraph(); closeList();
+      output.push(`<blockquote>${renderInlineMarkdown(quote[1])}</blockquote>`);
+      return;
+    }
+    if (/^\s*(?:---+|___+|\*\*\*+)\s*$/.test(line)) {
+      flushParagraph(); closeList(); output.push("<hr>"); return;
+    }
+    closeList();
+    paragraph.push(line);
+  });
+  if (inCode) output.push(`<pre><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
+  flushParagraph(); closeList();
+  return output.join("");
+}
+
 function addMessage(role, text, citations = []) {
   const node = document.createElement("div");
   node.className = `message ${role}`;
   const label = role === "user" ? "YOU" : "AGENT RESPONSE";
   const avatar = role === "user" ? "MC" : "AI";
-  node.innerHTML = `<div class="avatar">${avatar}</div><div class="bubble"><span class="agent-label">${label}</span><p>${escapeHtml(text)}</p>${citations.length ? `<div class="citations">${citations.map((c, i) => `<a href="${c.url}" target="_blank" rel="noreferrer">SOURCE ${i + 1} ↗</a>`).join("")}</div>` : ""}</div>`;
+  const content = role === "assistant" ? renderMarkdown(text) : `<p>${escapeHtml(text).replace(/\n/g, "<br>")}</p>`;
+  node.innerHTML = `<div class="avatar">${avatar}</div><div class="bubble"><span class="agent-label">${label}</span><div class="markdown">${content}</div>${citations.length ? `<div class="citations">${citations.map((c, i) => `<a href="${c.url}" target="_blank" rel="noreferrer">SOURCE ${i + 1} ↗</a>`).join("")}</div>` : ""}</div>`;
   $("#messages").append(node);
   $("#messages").scrollTop = $("#messages").scrollHeight;
   return node;
@@ -83,7 +178,7 @@ function renderEvaluation(data) {
     const row = $(`#criteria [data-key="${key}"]`);
     if (row) { row.style.setProperty("--score", `${score * 100}%`); row.querySelector("b").textContent = score.toFixed(2); }
   });
-  $("#actualOutput p").textContent = data.actual_answer;
+  $("#actualOutput .markdown").innerHTML = renderMarkdown(data.actual_answer);
 }
 
 $("#chatForm").addEventListener("submit", e => { e.preventDefault(); sendMessage($("#messageInput").value); });
@@ -116,4 +211,3 @@ async function boot() {
   } catch (_) { $(".system-state").classList.add("error"); $("#systemStatus").textContent = "api offline"; }
 }
 boot();
-

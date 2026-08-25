@@ -4,6 +4,10 @@ Sistema multiagente de atendimento Getnet com RAG, ferramentas de dados do clien
 
 ![Python](https://img.shields.io/badge/Python-3.12-111?style=flat-square) ![FastAPI](https://img.shields.io/badge/FastAPI-0.116-c7f36b?style=flat-square) ![Tests](https://img.shields.io/badge/tests-pytest-ff4d1f?style=flat-square)
 
+## Vídeo de apresentação
+
+▶️ [Assista à demonstração completa do projeto no YouTube](https://youtu.be/Cm2ex5Gj2ss)
+
 ## Executar
 
 ### Docker (recomendado)

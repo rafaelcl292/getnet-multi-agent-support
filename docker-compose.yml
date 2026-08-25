@@ -6,6 +6,5 @@ services:
     env_file:
       - .env
     environment:
-      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openai/gpt-4o-mini}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openai/gpt-5.6-terra}
     restart: unless-stopped
-

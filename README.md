@@ -25,7 +25,7 @@ pip install -r requirements-dev.txt
 uvicorn app.main:app --reload
 ```
 
-O sistema possui fallback determinístico: use `DEMO_MODE=true` para demonstrar e testar sem consumir a API. Com `OPENROUTER_API_KEY` configurada, geração e avaliação semântica usam o modelo definido em `OPENROUTER_MODEL` (padrão `openai/gpt-4o-mini`).
+O sistema possui fallback determinístico: use `DEMO_MODE=true` para demonstrar e testar sem consumir a API. Com `OPENROUTER_API_KEY` configurada, geração e avaliação semântica usam o modelo definido em `OPENROUTER_MODEL` (padrão `openai/gpt-5.6-terra`). Cada chamada registra modelo, status, latência e tokens no log, sem expor a chave ou o conteúdo do cliente.
 
 ## API
 

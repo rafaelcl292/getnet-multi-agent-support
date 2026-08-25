@@ -21,6 +21,7 @@ def test_support_agent_uses_customer_tools(client):
     assert body["route"] == "support"
     assert "agendado" in body["answer"]
     assert "get_receivables" in body["trace"][1]["details"]["tools"]
+    assert body["trace"][1]["details"]["generation"] == "deterministic-fallback"
     assert "R$ 1.840,50" in body["answer"]
 
 

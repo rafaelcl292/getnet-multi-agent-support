@@ -1,8 +1,12 @@
 import re
+import logging
 from html.parser import HTMLParser
 from urllib.parse import quote_plus
 
 import httpx
+
+
+logger = logging.getLogger("uvicorn.error")
 
 
 async def answer_external_question(question: str) -> tuple[str, list[dict]]:
@@ -11,13 +15,16 @@ async def answer_external_question(question: str) -> tuple[str, list[dict]]:
     if any(word in lower for word in ("euro", "dólar", "dolar", "câmbio", "cambio")):
         symbol = "EUR" if "euro" in lower else "USD"
         try:
-            async with httpx.AsyncClient(timeout=8) as client:
-                response = await client.get(f"https://api.frankfurter.app/latest?from={symbol}&to=BRL")
+            async with httpx.AsyncClient(timeout=8, follow_redirects=True) as client:
+                response = await client.get(f"https://api.frankfurter.dev/v1/latest?from={symbol}&to=BRL")
                 response.raise_for_status()
                 data = response.json()
             rate = data["rates"]["BRL"]
-            return f"Na cotação de referência mais recente ({data['date']}), 1 {symbol} equivale a R$ {rate:.4f}. A taxa efetiva do banco ou casa de câmbio pode incluir spread e tarifas.", [{"title": "Frankfurter — câmbio de referência", "url": "https://frankfurter.app/", "excerpt": f"{symbol}/BRL em {data['date']}"}]
-        except Exception:
+            formatted_rate = f"{rate:.4f}".replace(".", ",")
+            logger.info("exchange.response provider=frankfurter pair=%s/BRL date=%s", symbol, data["date"])
+            return f"Na cotação de referência mais recente ({data['date']}), 1 {symbol} equivale a R$ {formatted_rate}. A taxa efetiva do banco ou casa de câmbio pode incluir spread e tarifas.", [{"title": "Frankfurter — câmbio de referência", "url": "https://frankfurter.dev/", "excerpt": f"{symbol}/BRL em {data['date']}"}]
+        except Exception as exc:
+            logger.warning("exchange.error provider=frankfurter pair=%s/BRL error=%s", symbol, type(exc).__name__)
             return "Não consegui consultar a cotação agora. Tente novamente em instantes ou consulte seu banco para a taxa efetiva.", []
     if any(word in lower for word in ("tempo", "clima", "previsão", "weather")):
         city_match = re.search(r"(?:em|de)\s+([A-Za-zÀ-ú ]+?)(?:\s+amanhã|\?|$)", question, re.I)
